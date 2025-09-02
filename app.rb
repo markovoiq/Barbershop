@@ -1,15 +1,13 @@
-require 'rubygems'
-require 'sinatra'
-require 'sinatra/reloader'
 require 'sqlite3'
+require 'sinatra'
+require 'rubygems'
+require 'sinatra/reloader'
 
-def get_db
-	return SQLite3::Database.new 'barbershop.db'
-end
+db = SQLite3::Database.new 'barbershop.db'
+db.results_as_hash = true
 
 configure do
-	@db = get_db
-	@db.execute 'CREATE TABLE IF NOT EXISTS
+	db.execute 'CREATE TABLE IF NOT EXISTS
 	"Users" (
 	 	"id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	 	"name" TEXT,
@@ -49,9 +47,9 @@ post '/visit' do
 		return erb :visit
 	end
 
-	@db.execute 'INSERT INTO 
+	db.execute 'INSERT INTO 
 		"Users" (
-			username, 
+			name, 
 			phone, 
 			datestamp, 
 			barber, 
@@ -63,3 +61,31 @@ post '/visit' do
 
 end
 
+get '/contacts' do
+	erb :contacts	
+end
+
+post '/contacts' do 
+	@name = params[:name]
+	@email = params[:email]
+	@message = params[:message]
+
+	hh = {
+		:name => "Enter name",
+		:email => "Enter email",
+		:message => "Enter message" }
+
+	@error = hh.select {|key,_| params[key] == ""}.values.join(", ")
+
+	if @error != ""
+		return erb :contacts
+	else
+		return erb "Message sent successfully"
+	end
+
+end
+
+get '/showusers' do
+	@users = db.execute 'SELECT * FROM Users ORDER BY id DESC --'
+	erb :showusers 
+end

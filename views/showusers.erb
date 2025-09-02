@@ -1,0 +1,22 @@
+<h2> Users list </h2>
+
+<table class="table">
+	<thead>
+		<th> Name </th>
+		<th> Phone </th>
+		<th> Datestamp </th>
+		<th> Barber </th>
+		<th> Color </th>
+	</thead>
+	<tbody>
+	<% @users.each do |user| %>
+		<tr>
+			<td> <%= user['name'] %> </td>
+			<td> <%= user['phone'] %> </td>
+			<td> <%= user['datestamp'] %> </td>
+			<td> <%= user['barber'] %> </td>
+			<td> <%= user['color'] %> </td>
+		</tr>
+	<% end %>
+	</tbody>
+</table>
